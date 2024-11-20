@@ -75,33 +75,68 @@
       <h3>计算结果：</h3>
       <p>BDP (比特) = <span id="bdpBits"></span> bits</p>
       <p>BDP (字节) = <span id="bdpBytes"></span> bytes</p>
+      <div class="adjustment">
+        <button onclick="adjustValue(-1)">-1 MiB</button>
+        <button onclick="adjustValue(-5)">-5 MiB</button>
+        <button onclick="adjustValue(1)">+1 MiB</button>
+        <button onclick="adjustValue(5)">+5 MiB</button>
+      </div>
       <h3>建议的 TCP 缓冲区设置：</h3>
       <p>net.ipv4.tcp_wmem="4096 16384 <span id="recommendedWmem"></span>"</p>
       <p>net.ipv4.tcp_rmem="4096 87380 <span id="recommendedRmem"></span>"</p>
+      <button onclick="generateScript()">生成永久保存脚本</button>
+      <div id="script" style="display: none;">
+        <h3>永久保存脚本：</h3>
+        <pre id="scriptContent"></pre>
+      </div>
     </div>
   </div>
 
   <script>
+    let currentBdpBytes = 0;
+
     function calculateBDP() {
       const bandwidth = document.getElementById('bandwidth').value;
       const rtt = document.getElementById('rtt').value;
 
-      // 将带宽转换为 bps (Mbps to bps)
       const bps = bandwidth * 1000000;
-      // 将 RTT 转换为秒
       const rttSeconds = rtt / 1000;
 
-      // 计算 BDP (bits)
       const bdpBits = bps * rttSeconds;
-      // 转换为字节
-      const bdpBytes = Math.ceil(bdpBits / 8);
+      currentBdpBytes = Math.ceil(bdpBits / 8);
 
-      document.getElementById('bdpBits').textContent = bdpBits.toLocaleString();
-      document.getElementById('bdpBytes').textContent = bdpBytes.toLocaleString();
-      document.getElementById('recommendedWmem').textContent = bdpBytes.toLocaleString();
-      document.getElementById('recommendedRmem').textContent = bdpBytes.toLocaleString();
+      updateDisplay();
+    }
 
+    function adjustValue(mebibytes) {
+      const adjustment = mebibytes * 1024 * 1024; // 转换 MiB 为字节
+      currentBdpBytes = Math.max(0, currentBdpBytes + adjustment);
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById('bdpBits').textContent = (currentBdpBytes * 8);
+      document.getElementById('bdpBytes').textContent = currentBdpBytes;
+      document.getElementById('recommendedWmem').textContent = currentBdpBytes;
+      document.getElementById('recommendedRmem').textContent = currentBdpBytes;
       document.getElementById('result').style.display = 'block';
+    }
+
+    function generateScript() {
+      const scriptContent = `#!/bin/bash
+# 设置TCP缓冲区大小
+sysctl -w net.ipv4.tcp_wmem="4096 16384 ${currentBdpBytes}"
+sysctl -w net.ipv4.tcp_rmem="4096 87380 ${currentBdpBytes}"
+
+# 将设置写入/etc/sysctl.conf以便永久保存
+echo "net.ipv4.tcp_wmem = 4096 16384 ${currentBdpBytes}" >> /etc/sysctl.conf
+echo "net.ipv4.tcp_rmem = 4096 87380 ${currentBdpBytes}" >> /etc/sysctl.conf
+
+# 应用更改
+sysctl -p`;
+
+      document.getElementById('scriptContent').textContent = scriptContent;
+      document.getElementById('script').style.display = 'block';
     }
   </script>
 </body>
