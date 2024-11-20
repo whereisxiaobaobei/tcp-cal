@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IMAGE=mereith/tcp-cal
-VERSION=v0.0.1
+VERSION=v0.1.0
 
 echo "Building Docker image: ${IMAGE}:${VERSION}"
 
