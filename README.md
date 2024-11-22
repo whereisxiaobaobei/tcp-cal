@@ -2,6 +2,11 @@
 
 一个简单的网页工具，用于计算 TCP 缓冲区大小和带宽延迟积（BDP）。
 
+![](./tcp-cal2.png)
+
+> 相关文章：[TCP 调优参数计算器](https://www.nodeseek.com/post-199442-1)
+> 在线使用：[TCP 调优参数计算器](https://tcp-cal.mereith.com)
+
 ## 功能特点
 
 - 计算带宽延迟积（BDP）
@@ -39,16 +44,12 @@ docker run -d -p 80:80 mereith/tcp-cal:latest
 项目包含 Docker 构建脚本，可以使用以下命令构建并推送镜像：
 
 ```bash
-.build.sh
+./build.sh
 ```
 
-## 技术栈
+## PS
 
-- HTML5
-- CSS3
-- JavaScript
-- Docker
-- Nginx
+`tc_limit` 是另一个限流思路的调优脚本，我没仔细测试，需要的话可以试试看。
 
 ## 许可证
 
