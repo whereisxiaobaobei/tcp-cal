@@ -23,7 +23,7 @@
 #拉取镜像
 docker pull sunshinejackie/tcp-cal:latest
 #运行容器
-docker run -d -p 8008:9009 mereith/tcp-cal:latest
+docker run -d -p 9009:80 sunshinejackie/tcp-cal:latest
 ```
 
 访问 `http://localhost:9009` 即可使用计算器。
