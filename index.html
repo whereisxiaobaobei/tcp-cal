@@ -122,22 +122,30 @@
       document.getElementById('result').style.display = 'block';
     }
 
-    function generateScript() {
-      const scriptContent = `#!/bin/bash
+function generateScript() {
+  const scriptContent = `#!/bin/bash
 # 设置TCP缓冲区大小
 sysctl -w net.ipv4.tcp_wmem="4096 16384 ${currentBdpBytes}"
 sysctl -w net.ipv4.tcp_rmem="4096 87380 ${currentBdpBytes}"
 
+# 启用BBR拥塞控制算法
+sysctl -w net.ipv4.tcp_congestion_control=bbr
+
+# 启用fq队列调度器
+sysctl -w net.core.default_qdisc=fq
+
 # 将设置写入/etc/sysctl.conf以便永久保存
 echo "net.ipv4.tcp_wmem = 4096 16384 ${currentBdpBytes}" >> /etc/sysctl.conf
 echo "net.ipv4.tcp_rmem = 4096 87380 ${currentBdpBytes}" >> /etc/sysctl.conf
+echo "net.ipv4.tcp_congestion_control = bbr" >> /etc/sysctl.conf
+echo "net.core.default_qdisc = fq" >> /etc/sysctl.conf
 
 # 应用更改
 sysctl -p`;
-
-      document.getElementById('scriptContent').textContent = scriptContent;
-      document.getElementById('script').style.display = 'block';
-    }
+  
+  document.getElementById('scriptContent').textContent = scriptContent;
+  document.getElementById('script').style.display = 'block';
+}
   </script>
 </body>
 
