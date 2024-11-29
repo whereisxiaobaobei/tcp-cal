@@ -4,7 +4,7 @@
 
 [Demo](https://tcp-cal.myhosted.info/)
 
-![](./tcp-cal2.png)
+![](./tcp-cal.png)
 
 > 相关文章：[TCP 调优参数计算器](https://www.nodeseek.com/post-199442-1)
 > 在线使用：[TCP 调优参数计算器](https://tcp-cal.mereith.com)
