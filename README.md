@@ -21,12 +21,12 @@
 
 ```shell
 #拉取镜像
-docker pull mereith/tcp-cal:latest
+docker pull sunshinejackie/tcp-cal:latest
 #运行容器
-docker run -d -p 80:80 mereith/tcp-cal:latest
+docker run -d -p 8008:9009 mereith/tcp-cal:latest
 ```
 
-访问 `http://localhost:80` 即可使用计算器。
+访问 `http://localhost:9009` 即可使用计算器。
 
 ### 手动部署
 
